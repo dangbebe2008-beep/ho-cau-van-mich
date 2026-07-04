@@ -1,2 +1,3 @@
-# ho-cau-van-mich
-Ung dung quan ly ho cau Van Mich
+# Hồ Câu Văn Mịch
+Ứng dụng quản lý hồ câu.
+Cập nhật README
