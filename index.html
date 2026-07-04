@@ -1,11 +1,180 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hồ Câu Văn Mịch</title>
+
+<style>
+body{
+font-family:Arial,sans-serif;
+background:#f2f2f2;
+padding:15px;
+margin:0;
+}
+
+h1{
+text-align:center;
+}
+
+.card{
+background:white;
+padding:15px;
+margin-bottom:15px;
+border-radius:10px;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:5px;
+margin-bottom:10px;
+box-sizing:border-box;
+}
+
+button{
+width:100%;
+padding:12px;
+border:none;
+border-radius:8px;
+background:#0d6efd;
+color:white;
+font-size:16px;
+}
+
+.money{
+font-size:22px;
+font-weight:bold;
+color:green;
+}
+
+.red{
+color:red;
+}
+</style>
 </head>
+
 <body>
-<h1>Hồ Câu Văn Mịch</h1>
-<p>Ứng dụng quản lý hồ câu đang hoạt động.</p>
+
+<h1>🎣 Hồ Câu Văn Mịch</h1>
+
+<div class="card">
+<h3>Tổng Thu</h3>
+<div class="money" id="tongThu">0 đ</div>
+
+<h3>Tổng Chi</h3>
+<div class="money red" id="tongChi">0 đ</div>
+
+<h3>Lợi Nhuận</h3>
+<div class="money" id="loiNhuan">0 đ</div>
+</div>
+
+<div class="card">
+<h3>Thu Tiền Vé</h3>
+
+<input id="tenKhach" placeholder="Tên khách">
+
+<select id="giaVe">
+<option value="200000">Vé 6h - 200.000đ</option>
+<option value="300000">Vé 8h - 300.000đ</option>
+<option value="350000">Thông ca - 350.000đ</option>
+</select>
+
+<button onclick="themThu()">Lưu Thu</button>
+</div>
+
+<div class="card">
+<h3>Chi Tiêu</h3>
+
+<input id="noiDungChi" placeholder="Nội dung chi">
+
+<input id="soTienChi" type="number" placeholder="Số tiền">
+
+<button onclick="themChi()">Lưu Chi</button>
+</div>
+
+<div class="card">
+<h3>Lịch Sử</h3>
+<div id="lichSu"></div>
+</div>
+
+<script>
+
+let thu = JSON.parse(localStorage.getItem("thu")) || [];
+let chi = JSON.parse(localStorage.getItem("chi")) || [];
+
+function dinhDang(tien){
+return tien.toLocaleString("vi-VN")+" đ";
+}
+
+function capNhat(){
+
+let tongThu = 0;
+let tongChi = 0;
+
+thu.forEach(x=>tongThu += x.tien);
+chi.forEach(x=>tongChi += x.tien);
+
+document.getElementById("tongThu").innerText=dinhDang(tongThu);
+document.getElementById("tongChi").innerText=dinhDang(tongChi);
+document.getElementById("loiNhuan").innerText=dinhDang(tongThu-tongChi);
+
+let html="";
+
+for(let i=thu.length-1;i>=0;i--){
+html += "<p>💰 "+thu[i].ten+" - "+dinhDang(thu[i].tien)+"</p>";
+}
+
+for(let i=chi.length-1;i>=0;i--){
+html += "<p>💸 "+chi[i].noiDung+" - "+dinhDang(chi[i].tien)+"</p>";
+}
+
+document.getElementById("lichSu").innerHTML=html;
+}
+
+function themThu(){
+
+let ten=document.getElementById("tenKhach").value;
+let tien=parseInt(document.getElementById("giaVe").value);
+
+thu.push({
+ten:ten,
+tien:tien,
+ngay:new Date()
+});
+
+localStorage.setItem("thu",JSON.stringify(thu));
+
+document.getElementById("tenKhach").value="";
+
+capNhat();
+}
+
+function themChi(){
+
+let noiDung=document.getElementById("noiDungChi").value;
+let tien=parseInt(document.getElementById("soTienChi").value);
+
+if(!tien) return;
+
+chi.push({
+noiDung:noiDung,
+tien:tien,
+ngay:new Date()
+});
+
+localStorage.setItem("chi",JSON.stringify(chi));
+
+document.getElementById("noiDungChi").value="";
+document.getElementById("soTienChi").value="";
+
+capNhat();
+}
+
+capNhat();
+
+</script>
+
 </body>
 </html>
